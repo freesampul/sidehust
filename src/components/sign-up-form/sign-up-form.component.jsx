@@ -2,6 +2,9 @@ import { useState } from "react";
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase.utils";
 
 import FormInput from "../form-input/form-input.component";
+import Button from "../button/button.component";
+
+import './sign-up-form.styles.scss'; 
 
 const defaultFormValues = {
     displayName: '',
@@ -50,15 +53,16 @@ const SignUpForm = () => {
     };
 
     return (
-        <div>
-            <h1>Sign up</h1>
+        <div className="sign-up-container">
+          <h2>Don't have an account?</h2>
+            <span>Sign up with email and password</span>
             <form onSubmit={handleSubmit}>
-                <FormInput minlength="3" maxLength="20" label="Display Name" name="displayName" type="text" value={displayName} handleChange={handleChange} required/>
-                <FormInput  label="Email" name="displayName" type="text" value={displayName} handleChange={handleChange} required/>
-                <FormInput  label="Password" minlength="6" name="displayName" type="text" value={displayName} handleChange={handleChange} required/>
-                <FormInput  label="Confirm Password" minlength="6" name="displayName" type="text" value={displayName} handleChange={handleChange} required/>
+                <FormInput minLength="3" maxLength="20" label="Display Name" name="displayName" type="text" value={displayName} onChange={handleChange} required/>
+                <FormInput  label="Email" name="email" type="text" value={email} onChange={handleChange} required/>
+                <FormInput  label="Password" minLength="6" name="password" type="password" value={password} onChange={handleChange} required/>
+                <FormInput  label="Confirm Password" minLength="6" name="confirmPassword" type="password" value={confirmPassword} onChange={handleChange} required/>
 
-                <button type="submit">Sign Up</button>
+                <Button type="submit">Sign Up</Button>
             </form>
         </div>
     );
