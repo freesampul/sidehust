@@ -34,10 +34,20 @@ const SignUpForm = () => {
       return;
     }
 
+    // Check if displayName contains a space or special characters
+    const regex = /^[a-zA-Z0-9]{3,18}$/;
+    if (!regex.test(displayName)) {
+      alert("Display name cannot contain spaces or special characters");
+      return;
+    }
+
+
+
     try {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
-        password
+        password,
+        displayName
       );
 
       await createUserDocumentFromAuth(user, { displayName });
@@ -68,6 +78,8 @@ const SignUpForm = () => {
           required
           onChange={handleChange}
           name="displayName"
+          minLength={3}
+          maxLength={15}
           value={displayName}
         />
 
@@ -97,7 +109,9 @@ const SignUpForm = () => {
           name="confirmPassword"
           value={confirmPassword}
         />
+        <div className="sign-up-button-container">
         <Button type="submit">Sign Up</Button>
+        </div>
       </form>
     </div>
   );
