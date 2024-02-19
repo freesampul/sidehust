@@ -30,31 +30,49 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 export const db = getFirestore();
 
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
-  const userDocRef = doc(db, 'users', userAuth.uid);
+  const { uid, displayName, email } = userAuth;
+
+  if (!displayName) {
+    console.error("Display name is null or undefined");
+    return;
+  }
+
+  // Check if the username (displayName) is already taken
+  const usernameDocRef = doc(db, 'usernames', displayName);
+  const usernameSnapshot = await getDoc(usernameDocRef);
+
+  if (usernameSnapshot.exists()) {
+    return; // Exit the function if the username is not unique
+  }
+
+  // If the username is unique, proceed to create the user document
+  const userDocRef = doc(db, 'users', uid);
 
   const userSnapshot = await getDoc(userDocRef);
 
   if (!userSnapshot.exists()) {
-    const { email } = userAuth;
     const createdAt = new Date();
-    const displayName = additionalInformation.displayName;
 
     try {
+      // Set the document in the 'users' collection
       await setDoc(userDocRef, {
         displayName,
         email,
         createdAt,
         ...additionalInformation
-      },
-      console.log("user created", displayName));
+      });
+
+      // Set the document in the 'usernames' collection for uniqueness check
+      await setDoc(usernameDocRef, { uid });
+
+      console.log("User created:", displayName);
     } catch (error) {
-      console.log('error creating the user', error.message);
+      console.error('Error creating the user:', error.message);
     }
   }
 
   return userDocRef;
 };
-
 
 export const createAuthUserWithEmailAndPassword = async (email, password, displayName) => {
   if (!email || !password) return;
@@ -82,15 +100,25 @@ const updateDisplayName = async (user, displayName) => {
   }
 };
 
-  export const signInAuthUserWithEmailAndPassword = async (email, password) => {
-    if (!email || !password) return;
-  
-    return await signInWithEmailAndPassword(auth, email, password);
-  };
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
 
-  export const signOutUser = () => {
-    signOut(auth);
-  };
+  return await signInWithEmailAndPassword(auth, email, password);
+};
 
-  export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+export const signOutUser = async () => await signOut(auth);
 
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+
+export const doesUserExist = async (displayName) => {
+  try {
+    const userDocRef = doc(db, 'usernames', displayName);
+    const userSnapshot = await getDoc(userDocRef);
+
+    // Check if the document exists
+    console.log("userSnapshot", userSnapshot.exists());
+    return userSnapshot.exists();
+  } catch (error) {
+    return false; // Return false in case of an error
+  }
+};
