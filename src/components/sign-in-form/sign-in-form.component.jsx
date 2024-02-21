@@ -37,6 +37,7 @@ const SignInForm = () => {
         password
       );
       resetFormFields();
+      //Redirect user to home page
     } catch (error) {
       switch (error.code) {
         case 'auth/wrong-password':

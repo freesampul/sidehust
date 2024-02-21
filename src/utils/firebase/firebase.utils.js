@@ -8,15 +8,20 @@ import { updateProfile } from 'firebase/auth';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBUgh6WBKZyp3CzCOJ9b8sgzQOwrnr13Wg",
-  authDomain: "crwn-clothui.firebaseapp.com",
-  projectId: "crwn-clothui",
-  storageBucket: "crwn-clothui.appspot.com",
-  messagingSenderId: "143128131551",
-  appId: "1:143128131551:web:a385d88978b19f5136f66a"
+  apiKey: "AIzaSyCYEhVgAW2COU2oGn0EXhxx1OwmIucFEWY",
+  authDomain: "sidehustles-ff134.firebaseapp.com",
+  projectId: "sidehustles-ff134",
+  storageBucket: "sidehustles-ff134.appspot.com",
+  messagingSenderId: "853886376027",
+  appId: "1:853886376027:web:400bb90770b5f98ec5477e",
+  measurementId: "G-EDGXYC5G4C"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+
+export const initFirebase = () => {
+  return firebaseApp;
+};
 
 const googleProvider = new GoogleAuthProvider();
 
