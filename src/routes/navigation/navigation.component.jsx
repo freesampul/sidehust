@@ -39,7 +39,7 @@ const Navigation = () =>{
             </Link>
             <div className="nav-links-container">
                 <Link className='nav-link' to="/chat">Generate Ideas</Link>
-                <Link className='nav-link' to="/chat">Pricing</Link>
+                <Link className='nav-link' to="/checkout">Pricing</Link>
                 <Link className='nav-link' to="/chat">Sugma</Link>
                 {
                   currentUser ? (

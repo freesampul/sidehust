@@ -3,7 +3,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPas
   signInWithEmailAndPassword,
   signOut, onAuthStateChanged
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from "firebase/functions";
 import { updateProfile } from 'firebase/auth';
 
 
@@ -53,28 +54,6 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   // If the username is unique, proceed to create the user document
   const userDocRef = doc(db, 'users', uid);
 
-  const userSnapshot = await getDoc(userDocRef);
-
-  if (!userSnapshot.exists()) {
-    const createdAt = new Date();
-
-    try {
-      // Set the document in the 'users' collection
-      await setDoc(userDocRef, {
-        displayName,
-        email,
-        createdAt,
-        ...additionalInformation
-      });
-
-      // Set the document in the 'usernames' collection for uniqueness check
-      await setDoc(usernameDocRef, { uid });
-
-      console.log("User created:", displayName);
-    } catch (error) {
-      console.error('Error creating the user:', error.message);
-    }
-  }
 
   return userDocRef;
 };
@@ -126,4 +105,75 @@ export const doesUserExist = async (displayName) => {
   } catch (error) {
     return false; // Return false in case of an error
   }
+};
+
+
+
+export const getCheckoutUrl = async (app, priceId) => {
+  const auth = getAuth(app);
+  const userId = auth.currentUser?.uid;
+  if (!userId) throw new Error("User is not authenticated");
+
+  const db = getFirestore(app);
+  const checkoutSessionRef = collection(
+    db,
+    "customers",
+    userId,
+    "checkout_sessions"
+  );
+
+  const docRef = await addDoc(checkoutSessionRef, {
+    price: priceId,
+    success_url: window.location.origin,
+    cancel_url: window.location.origin,
+  });
+
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onSnapshot(docRef, (snap) => {
+      const data = snap.data();
+      const error = data.error;
+      const url = data.url;
+      if (error) {
+        unsubscribe();
+        reject(new Error(`An error occurred: ${error.message}`));
+      }
+      if (url) {
+        console.log("Stripe Checkout URL:", url);
+        unsubscribe();
+        resolve(url);
+      }
+    });
+  });
+};
+
+// Function to get a portal URL
+export const getPortalUrl = async (app) => {
+  const auth = getAuth(app);
+  const user = auth.currentUser;
+
+  let dataWithUrl;
+  try {
+    const functions = getFunctions(app, "us-central1");
+    const functionRef = httpsCallable(
+      functions,
+      "ext-firestore-stripe-payments-createPortalLink"
+    );
+    const result = await functionRef({
+      customerId: user?.uid,
+      returnUrl: window.location.origin,
+    });
+
+    dataWithUrl = result.data;
+    console.log("Reroute to Stripe portal: ", dataWithUrl.url);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return new Promise((resolve, reject) => {
+    if (dataWithUrl && dataWithUrl.url) {
+      resolve(dataWithUrl.url);
+    } else {
+      reject(new Error("No url returned"));
+    }
+  });
 };
