@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getCheckoutUrl, getPremiumStatus } from "../../utils/firebase/firebase.utils";
+import { getCheckoutUrl } from "../../utils/firebase/firebase.utils";
 import { firebaseApp } from "../../utils/firebase/firebase.utils"; // Ensure you export `firebaseApp`
 
 const Payment = () => {
@@ -27,14 +27,14 @@ const Payment = () => {
         }
     };
 
-    const printStatus = async () => {
-        try {
-            const status = await getPremiumStatus(firebaseApp);
-            console.log("Premium status", status);
-        } catch (error) {
-            console.log("Error getting premium status", error);
-        }
-    }
+    // const printStatus = async () => {
+    //     try {
+    //         const status = await getPremiumStatusAndUpdatePoints(firebaseApp);
+    //         console.log("Premium status", status);
+    //     } catch (error) {
+    //         console.log("Error getting premium status", error);
+    //     }
+    // }
 
     return (
         <div>
@@ -42,10 +42,10 @@ const Payment = () => {
             <select value={selectedTier} onChange={handleTierChange}>
                 <option value="Tier 1">Tier 1</option>
                 <option value="Tier 2">Tier 2</option>
-                <option value="Tier 2">Tier 3</option>
+                <option value="Tier 3">Tier 3</option>
             </select>
             <button onClick={handlePayment}>Pay</button>
-            <button onClick={printStatus}>Status</button>
+            <button onClick=''>Status</button>
         </div>
         
     );

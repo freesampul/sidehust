@@ -14,6 +14,7 @@ import {
   getDoc,
   setDoc,
   addDoc,
+  updateDoc,
   collection,
   onSnapshot,
   query,
@@ -203,37 +204,3 @@ export const getPortalUrl = async (app) => {
 };
 
 export { firebaseApp };
-const getPremiumStatus = async (app) => {
-  const auth = getAuth(app);
-  const userId = auth.currentUser?.uid;
-  if (!userId) throw new Error("User not logged in");
-
-  const db = getFirestore(app);
-  const subscriptionsRef = collection(db, "customers", userId, "subscriptions");
-  const q = query(
-    subscriptionsRef,
-    where("status", "in", ["trialing", "active"])
-  );
-
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        console.log("Subscription snapshot", snapshot.docs.length);
-        if (snapshot.docs.length === 0) {
-          console.log("No active or trialing subscriptions found");
-          resolve(false);
-        } else {
-          console.log("Active or trialing subscription found");
-          const subscriptionData = snapshot.docs[0].data(); // Assuming only one subscription exists
-          const subscriptionType = subscriptionData.type; // Adjust this based on your Firestore structure
-          resolve(subscriptionType);
-        }
-        unsubscribe();
-      },
-      reject
-    );
-  });
-};
-
-export { getPremiumStatus };
