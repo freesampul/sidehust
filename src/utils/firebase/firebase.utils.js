@@ -1,12 +1,26 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, 
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut, onAuthStateChanged
-} from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot } from 'firebase/firestore';
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  collection,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { updateProfile } from 'firebase/auth';
-
+import { updateProfile } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCYEhVgAW2COU2oGn0EXhxx1OwmIucFEWY",
@@ -15,7 +29,7 @@ const firebaseConfig = {
   storageBucket: "sidehustles-ff134.appspot.com",
   messagingSenderId: "853886376027",
   appId: "1:853886376027:web:400bb90770b5f98ec5477e",
-  measurementId: "G-EDGXYC5G4C"
+  measurementId: "G-EDGXYC5G4C",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -27,15 +41,19 @@ export const initFirebase = () => {
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
-  prompt: 'select_account',
+  prompt: "select_account",
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider);
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
   const { uid, displayName, email } = userAuth;
 
   if (!displayName) {
@@ -44,7 +62,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   }
 
   // Check if the username (displayName) is already taken
-  const usernameDocRef = doc(db, 'usernames', displayName);
+  const usernameDocRef = doc(db, "usernames", displayName);
   const usernameSnapshot = await getDoc(usernameDocRef);
 
   if (usernameSnapshot.exists()) {
@@ -52,17 +70,24 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   }
 
   // If the username is unique, proceed to create the user document
-  const userDocRef = doc(db, 'users', uid);
-
+  const userDocRef = doc(db, "users", uid);
 
   return userDocRef;
 };
 
-export const createAuthUserWithEmailAndPassword = async (email, password, displayName) => {
+export const createAuthUserWithEmailAndPassword = async (
+  email,
+  password,
+  displayName
+) => {
   if (!email || !password) return;
 
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
     if (displayName) {
       await updateDisplayName(userCredential.user, displayName);
@@ -70,8 +95,8 @@ export const createAuthUserWithEmailAndPassword = async (email, password, displa
 
     return userCredential;
   } catch (error) {
-    console.error('Error creating the user', error.message);
-    throw error; 
+    console.error("Error creating the user", error.message);
+    throw error;
   }
 };
 
@@ -79,7 +104,7 @@ const updateDisplayName = async (user, displayName) => {
   try {
     await updateProfile(user, { displayName });
   } catch (error) {
-    console.error('Error updating display name', error.message);
+    console.error("Error updating display name", error.message);
     throw error;
   }
 };
@@ -92,11 +117,12 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
 export const signOutUser = async () => await signOut(auth);
 
-export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);
 
 export const doesUserExist = async (displayName) => {
   try {
-    const userDocRef = doc(db, 'usernames', displayName);
+    const userDocRef = doc(db, "usernames", displayName);
     const userSnapshot = await getDoc(userDocRef);
 
     // Check if the document exists
@@ -106,8 +132,6 @@ export const doesUserExist = async (displayName) => {
     return false; // Return false in case of an error
   }
 };
-
-
 
 export const getCheckoutUrl = async (app, priceId) => {
   const auth = getAuth(app);
@@ -179,3 +203,37 @@ export const getPortalUrl = async (app) => {
 };
 
 export { firebaseApp };
+const getPremiumStatus = async (app) => {
+  const auth = getAuth(app);
+  const userId = auth.currentUser?.uid;
+  if (!userId) throw new Error("User not logged in");
+
+  const db = getFirestore(app);
+  const subscriptionsRef = collection(db, "customers", userId, "subscriptions");
+  const q = query(
+    subscriptionsRef,
+    where("status", "in", ["trialing", "active"])
+  );
+
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        console.log("Subscription snapshot", snapshot.docs.length);
+        if (snapshot.docs.length === 0) {
+          console.log("No active or trialing subscriptions found");
+          resolve(false);
+        } else {
+          console.log("Active or trialing subscription found");
+          const subscriptionData = snapshot.docs[0].data(); // Assuming only one subscription exists
+          const subscriptionType = subscriptionData.type; // Adjust this based on your Firestore structure
+          resolve(subscriptionType);
+        }
+        unsubscribe();
+      },
+      reject
+    );
+  });
+};
+
+export { getPremiumStatus };
