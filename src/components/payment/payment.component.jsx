@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { getCheckoutUrl } from "../../utils/firebase/firebase.utils";
 
+
 const Payment = () => {
     const priceId = "price_1OmQHjDT4vO9oNMHBjPblk38"
     const getCheckoutUrl = async () => { 
