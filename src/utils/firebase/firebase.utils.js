@@ -177,3 +177,5 @@ export const getPortalUrl = async (app) => {
     }
   });
 };
+
+export { firebaseApp };
