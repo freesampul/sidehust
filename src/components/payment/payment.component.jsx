@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getCheckoutUrl } from "../../utils/firebase/firebase.utils";
-import { firebaseApp } from "../../utils/firebase/firebase.utils"; // Ensure you export `firebaseApp`
+import { firebaseApp, validateUserSubscription } from "../../utils/firebase/firebase.utils"; // Ensure you export `firebaseApp`
 
 const Payment = () => {
     const [selectedTier, setSelectedTier] = useState("Tier 1");
@@ -36,6 +36,10 @@ const Payment = () => {
     //     }
     // }
 
+    const validateUser = async () => {
+        validateUserSubscription(firebaseApp, "userId");
+    }
+
     return (
         <div>
             <h1>Payment</h1>
@@ -45,7 +49,7 @@ const Payment = () => {
                 <option value="Tier 3">Tier 3</option>
             </select>
             <button onClick={handlePayment}>Pay</button>
-            <button onClick=''>Status</button>
+            <button onClick={validateUser}>Status</button>
         </div>
         
     );

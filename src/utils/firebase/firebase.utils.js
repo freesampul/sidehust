@@ -203,4 +203,15 @@ export const getPortalUrl = async (app) => {
   });
 };
 
+//validate if a user is a paying user on stripe
+export const validateUserSubscription = async (app, userId) => {
+  const functions = getFunctions(app, "us-central1");
+  const validateUser = httpsCallable(
+    functions,
+    "ext-firestore-stripe-payments-validateUser"
+  );
+  const result = await validateUser({ userId });
+  return result.data;
+};
+
 export { firebaseApp };
