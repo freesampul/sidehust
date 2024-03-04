@@ -28,6 +28,7 @@ const UserProfile = () => {
             <span>Posts</span>
             <span>Followers</span>
             <span>Following</span>
+            <Button onClick={signOutHandler}>Sign Out</Button>
         </div>
         </>
     );

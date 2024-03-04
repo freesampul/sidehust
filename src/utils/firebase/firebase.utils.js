@@ -12,7 +12,7 @@ import {
   getFirestore,
   doc,
   getDoc,
-  setDoc,
+  getDocs,
   addDoc,
   updateDoc,
   collection,
@@ -215,3 +215,48 @@ export const validateUserSubscription = async (app, userId) => {
 };
 
 export { firebaseApp };
+
+
+
+export async function getUserPointsByEmail(email) {
+  try {
+    const userQuerySnapshot = await getDocs(
+      query(collection(db, 'userPoints'), where('email', '==', email))
+    );
+
+    if (userQuerySnapshot.empty) {
+      return null;
+    }
+
+    const userData = userQuerySnapshot.docs[0].data();
+    return userData.points;
+  } catch (error) {
+    console.error('Error fetching user points:', error.message);
+    throw error;
+  }
+}
+
+export async function subtractPointsFromUser(email, pointsToSubtract) {
+  try {
+    const userQuerySnapshot = await getDocs(
+      query(collection(db, 'userPoints'), where('email', '==', email))
+    );
+
+    if (userQuerySnapshot.empty) {
+      throw new Error('User not found');
+    }
+
+    const userId = userQuerySnapshot.docs[0].id;
+    const userDocRef = doc(db, 'userPoints', userId);
+    const userDocSnapshot = await getDoc(userDocRef);
+    const currentPoints = userDocSnapshot.data().points;
+    const newPointsTotal = currentPoints - pointsToSubtract;
+
+    await updateDoc(userDocRef, { points: newPointsTotal });
+
+    return newPointsTotal;
+  } catch (error) {
+    console.error('Error subtracting points:', error.message);
+    throw error;
+  }
+}

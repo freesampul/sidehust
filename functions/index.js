@@ -1,77 +1,51 @@
-const { logger } = require("firebase-functions");
-const { onRequest } = require("firebase-functions/v2/https");
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const stripe = require('stripe')('sk_test_51MKsf9DT4vO9oNMHxNBXZYgcrEDlb0BNnNdS0L5bjTHD7gIM2vnXohrEP9DMD2GU9IYCDzhQt5amEanG7NwW7jGG00wJveSBEx');
 
-const { initializeApp } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+admin.initializeApp();
 
-initializeApp(); // Initialize Firebase Admin SDK
-
-// Now you can use getFirestore function to access Firestore
-
-//Get stripeKey from env file
-const stripeKey = process.env.STRIPE_SECRET_KEY;
-const webhookKey = process.env.STRIPE_WEBHOOK_SECRET;
-
-const { Stripe } = require("stripe");
-const stripe = new Stripe(stripeKey, {
-  apiVersion: "2020-08-27", // Adjust the API version based on your needs
-});
-
-// Firestore reference
-const db = getFirestore();
-
-// Cloud Function to listen to Stripe webhooks
-exports.stripeWebhookHandler = onRequest(async (req, res) => {
-  const sig = req.headers["stripe-signature"];
-  let event;
-
+exports.handleStripeCheckoutCompleted = functions.https.onRequest(async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookKey);
-  } catch (err) {
-    logger.error("Error verifying Stripe webhook signature:", err);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
+    const event = stripe.webhooks.constructEvent(req.rawBody, sig, 'whsec_IrLF3DrmHrbbWqfWXkHhHkjkq4znx6Vl');
 
-  // Handle the event
-  switch (event.type) {
-    case "invoice.payment_succeeded":
-      const customerId = event.data.object.customer;
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      
+      // Extract relevant data from the session
+      const customerId = session.customer;
+      const subscriptionPrice = (session.amount_total / 100); 
 
-      // Retrieve customer information from Stripe
-      const customer = await stripe.customers.retrieve(customerId);
-
-      // Check if the customer has any subscriptions or successful payments
-      if (
-        customer.subscriptions.data.length > 0 ||
-        customer.invoice_settings.default_payment_method
-      ) {
-        // Calculate the amount paid for the subscription
-        const invoice = event.data.object;
-        const amountPaid = invoice.amount_paid / 100; // Convert amount from cents to dollars
-
-        // Update the points for the customer
-        await addPointsToCustomer(customerId, amountPaid);
+      let points = 0;
+      if (subscriptionPrice === 10) {
+        points = 10; 
+      } else if (subscriptionPrice === 15) {
+        points = 20; 
+      } else if (subscriptionPrice === 20) {
+        points = 30; 
       }
 
-      return res.status(200).send("Webhook received");
+      const userPointsRef = admin.firestore().collection('userPoints').doc(customerId);
+      const userPointsSnapshot = await userPointsRef.get();
 
-    default:
-      logger.info(`Unhandled event type: ${event.type}`);
+      let currentPoints = 0;
+      if (userPointsSnapshot.exists) {
+        currentPoints = userPointsSnapshot.data().points;
+      }
+
+      const totalPoints = currentPoints + points;
+
+      await userPointsRef.set({
+        points: totalPoints
+      }, { merge: true });
+
+      console.log(`Updated points for user ${customerId} to ${totalPoints}`);
+    }
+
+    res.status(200).send('Webhook received successfully');
+  } catch (err) {
+    console.error('Error handling webhook:', err.message);
+    res.status(400).send('Webhook Error: ' + err.message); // Corrected error response
   }
 });
-
-// Function to add points to a customer's collection in Firestore
-async function addPointsToCustomer(customerId, pointsToAdd) {
-  const customerRef = doc(db, "customers", customerId);
-
-  try {
-    const customerDoc = await getDoc(customerRef);
-    const currentPoints = customerDoc.data().points || 0;
-    const newPoints = currentPoints + pointsToAdd;
-
-    await updateDoc(customerRef, { points: newPoints });
-  } catch (error) {
-    logger.error("Error adding points to customer:", error);
-    throw error;
-  }
-}

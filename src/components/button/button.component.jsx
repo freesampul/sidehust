@@ -1,4 +1,4 @@
-import {React} from 'React'
+
 import './button.styles.scss';
 
 export const BUTTON_TYPE_CLASSES = {

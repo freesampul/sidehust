@@ -1,6 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
-import './index.scss';
+import './index.css';
 import App from './App';
 import { UserProvider } from './contexts/users.context';
 import { BrowserRouter } from 'react-router-dom';
