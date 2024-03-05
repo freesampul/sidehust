@@ -19,7 +19,7 @@ const Navigation = () => {
 
   return (
     <Fragment>
-      <div className="navigation bg-red-100 text-black p-4 flex items-center justify-between">
+      <div className="navigation text-black p-4 flex items-center justify-between">
         <div className="flex items-center">
           <Link className="flex items-center" to='/'>
             <CrwnLogo className="w-8 h-8 mr-2 ml-4" /> {/* Adjusted margin here */}
@@ -27,14 +27,15 @@ const Navigation = () => {
           </Link>
         </div>
         <div className="flex items-center justify-center flex-grow">
-          <div className="text-center ml-[-10re"> {/* Adjusted margin here */}
-            <Link className='nav-link mx-2' to="/chat">Generate Ideas</Link>
+          <div className="text-center ml-[-9rem]"> {/* Adjusted margin here */}
+            <Link className='nav-link mx-2' to="/chat">Lessons</Link>
             <Link className='nav-link mx-2' to="/checkout">Pricing</Link>
-            <Link className='nav-link mx-2' to="/chat">Sugma</Link>
+            <Link className='nav-link mx-2' to="/chat">Sidhustles</Link>
+            <Link className='nav-link mx-2' to="/chat">Blog</Link>
             {currentUser ? (
               <Link className='nav-link mx-2' to={`/user/${userName}`}>Hi {userName}</Link>
             ) : (
-              <Link className='nav-link mx-2' to="/auth">Sign In</Link>
+              <Link className='nav-link' to="/auth">Sign In</Link>
             )}
           </div>
         </div>
