@@ -7,11 +7,12 @@ import Authentication from "./routes/authentication/authentication.component";
 import Chat from "./routes/chat/chat.component";
 import UserPage from "./routes/users/users.component";
 import Payment from "./components/payment/payment.component";
+import Header from "./components/header";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigation />}>
+      <Route path="/" element={<Header />}>
         <Route index element={<Home />} />
         <Route path="chat" element={<Chat />} />
         <Route path="auth" element={<Authentication />} />
