@@ -19,7 +19,7 @@ const Navigation = () => {
 
   return (
     <Fragment>
- <div class="p-4 bg-red-100">
+ <div class="p-4 bg-red-50">
   <nav class="flex items-center justify-between bg-transparent">
     <div class="flex items-center">
       <span class="text-black text-lg font-semibold mr-2 ml-4">Logo</span>

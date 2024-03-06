@@ -1,6 +1,9 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const stripe = require('stripe')('sk_test_51MKsf9DT4vO9oNMHxNBXZYgcrEDlb0BNnNdS0L5bjTHD7gIM2vnXohrEP9DMD2GU9IYCDzhQt5amEanG7NwW7jGG00wJveSBEx');
+const stripeSec = process.env.STRIPE_SECRET_KEY;
+const stripeWebHook = process.env.STRIPE_WEBHOOK_KEY;
+
+const stripe = require('stripe')(stripeSec);
 
 admin.initializeApp();
 
@@ -8,7 +11,7 @@ exports.handleStripeCheckoutCompleted = functions.https.onRequest(async (req, re
   const sig = req.headers['stripe-signature'];
   
   try {
-    const event = stripe.webhooks.constructEvent(req.rawBody, sig, 'whsec_IrLF3DrmHrbbWqfWXkHhHkjkq4znx6Vl');
+    const event = stripe.webhooks.constructEvent(req.rawBody, sig, stripeWebHook);
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;

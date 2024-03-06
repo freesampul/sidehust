@@ -5,16 +5,18 @@ import './lessons-preview.styles.css';
 
 const LessonsPreview = () => {
   return (
+    <div className="h-screen bg-gradient-to-b from-red-100 to-white-100">
     <div className="courses-container">
-      {lessonData.map((course, index) => (
+      {lessonData.map((course) => (
         <LessonBox
           key={course.id}
           title={course.title}
           thumbnailSrc={course.slides[0].image} 
-          buttonText="Buy for 5 Tokens"
+          buttonText={`Unlock for ${course.slides[0].price} tokens`}
           buttonAction={() => console.log(`Buy ${course.title}`)}
         />
       ))}
+    </div>
     </div>
   );
 };

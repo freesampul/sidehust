@@ -5,7 +5,7 @@ const Home = () => {
   return (
     <>
       <div className="h-screen overflow-hidden relative">
-        <div className="h-screen bg-gradient-to-b from-red-100 to-white-100 absolute top-0 left-0 right-0"></div>
+        <div className="h-screen bg-gradient-to-b from-red-50 to-white-100 absolute top-0 left-0 right-0"></div>
         <div className="flex flex-col items-center justify-center h-screen relative">
           <Outlet />
           <div className="max-w-lg px-4">
