@@ -1,0 +1,24 @@
+/* Add this CSS to your stylesheets */
+.courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .courses-container > * {
+    flex: 0 0 calc(25% - 20px); /* Adjust 25% to change the number of items per row */
+    margin: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .courses-container > * {
+      flex-basis: calc(50% - 20px); /* Adjust 50% for smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .courses-container > * {
+      flex-basis: calc(100% - 20px); /* Adjust 100% for mobile screens */
+    }
+  }
+  

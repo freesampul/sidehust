@@ -6,7 +6,7 @@ import Authentication from "./routes/authentication/authentication.component";
 import Chat from "./routes/chat/chat.component";
 import UserPage from "./routes/users/users.component";
 import Payment from "./components/payment/payment.component";
-import Header from "./components/header";
+import LessonsPage from "./routes/lessons/lessons.component";
 
 const App = () => {
   return (
@@ -17,6 +17,7 @@ const App = () => {
         <Route path="auth" element={<Authentication />} />
         <Route path="checkout" element={<Payment />} />
         <Route path="user/*" element={<UserPage />} />
+        <Route path="lessons/*" element={<LessonsPage />} />
       </Route>
     </Routes>
   );
