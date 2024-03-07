@@ -5,7 +5,7 @@ import './lessons-preview.styles.css';
 
 const LessonsPreview = () => {
   return (
-    <div className="h-screen bg-gradient-to-b from-red-100 to-white-100">
+    <div className="h-screen bg-gradient-to-b from-red-50 to-white-100">
     <div className="courses-container">
       {lessonData.map((course) => (
         <LessonBox
