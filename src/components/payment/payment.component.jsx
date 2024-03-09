@@ -10,11 +10,9 @@ const Payment = () => {
         try {
             let priceId = "";
             if (selectedTier === "Tier 1") {
-                priceId = "price_1OmQHjDT4vO9oNMHBjPblk38";
+                priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3";
             } if (selectedTier === "Tier 2") {
-                priceId = "price_1OpCHnDT4vO9oNMHnIF0Lerl";
-            } else if (selectedTier === "Tier 3") {
-                priceId = "price_1OpCdQDT4vO9oNMHTokejJyw";
+                priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3";
             }
             const url = await getCheckoutUrl(firebaseApp, priceId);
             window.location.href = url;

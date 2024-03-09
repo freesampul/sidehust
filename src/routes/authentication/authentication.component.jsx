@@ -5,10 +5,12 @@ import './authentication.styles.scss';
 
 const Authentication = () => {
   
-    return (
-      <div className="authentication-container">
+  return (
+      <div className="h-screen bg-gradient-to-b from-red-50 to-white-100  mt-[-15]">
+      <div className="authentication-container bg-red-50">
         <SignInForm />
         <SignUpForm />
+      </div>
       </div>
     );
   };
