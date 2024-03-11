@@ -31,7 +31,6 @@ const Chat = () => {
         }
     };
 
-    console.log("User Points:", userPoints);
     return (
         <div>
             <h1>Chat</h1>
