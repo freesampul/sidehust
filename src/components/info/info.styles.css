@@ -1,0 +1,26 @@
+.info-box-container {
+    display: flex;
+    justify-content: center;
+    z-index:5;
+}
+
+.info-box-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px;
+    max-width: 90vw; /* Adjust the maximum width as per your design */
+}
+
+@media (min-width: 1024px) { /* Adjust the breakpoint as needed */
+    .info-box-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 16px; /* Adjust margin as needed */
+    }
+}

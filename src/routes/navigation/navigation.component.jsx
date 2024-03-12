@@ -31,7 +31,6 @@ const Navigation = () => {
               <a href="/lessons" class="text-black hover:text-gray-600 px-3 py-2">Lessons</a>
               <a href="/checkout" class="text-black hover:text-gray-600 px-3 py-2">Pricing</a>
               <a href="/blog" class="text-black hover:text-gray-600 px-3 py-2">Blog</a>
-              <a href="/auth" class="align-self-right py-2">Account</a>
             </div>
             <div class="lg:hidden ml-auto">
               <button id="menu-toggle" class="text-black-300 hover:text-gray-600 focus:outline-none">

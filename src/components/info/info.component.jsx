@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/users.context";
 import { getUserPointsByEmail } from "../../utils/firebase/firebase.utils";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import "./info.styles.css"; // Import CSS file for styling
 
 const InfoBox = () => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -28,13 +30,17 @@ const InfoBox = () => {
     }, [currentUser]);
 
     return (
-        <div className="absolute top-0 right-0 p-4 m-4 bg-white border border-gray-300 rounded-lg shadow-lg z-20 md:mr-60 lg:mr-5">
+        <div className="info-box-container">
             {currentUser ? (
-                <h1 className='nav-link mx-2' to={`/user/${userName}`}>Hi {userName}</h1>
+                <Link to={`/user/${userName}`} className="info-box-content">
+                    <h1 className='nav-link mx-2'>Hi {userName}</h1>
+                    {userPoints !== null && <p>Tokens: {userPoints}</p>}
+                </Link>
             ) : (
-                <h1 className='nav-link' to="/auth">Sign In</h1>
+                <Link to="/auth" className="info-box-content">
+                    <h1 className='nav-link'>Sign In</h1>
+                </Link>
             )}
-            {userPoints !== null ? <p> Tokens: {userPoints}</p> : null}
         </div>
     );
 }
