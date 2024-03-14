@@ -46,7 +46,7 @@ const Navigation = () => {
               <Link to="/" className="text-black hover:text-gray-600 px-3 py-2">Home</Link>
               <Link to="/lessons" className="text-black hover:text-gray-600 px-3 py-2">Lessons</Link>
               <Link to="/checkout" className="text-black hover:text-gray-600 px-3 py-2">Pricing</Link>
-              <Link to="/blog" className="text-black hover:text-gray-600 px-3 py-2">Blog</Link>
+              <Link to="/tools" className="text-black hover:text-gray-600 px-3 py-2">Tools</Link>
             </div>
             <div className="lg:hidden ml-auto">
               <button id="menu-toggle" onClick={togglePhonePopup} className="text-black-300 hover:text-gray-600 focus:outline-none">

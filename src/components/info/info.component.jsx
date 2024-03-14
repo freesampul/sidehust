@@ -32,7 +32,7 @@ const InfoBox = () => {
     return (
         <div className="info-box-container">
             {currentUser ? (
-                <Link to={`/user/${userName}`} className="info-box-content">
+                <Link to={`/user`} className="info-box-content">
                     <h1 className='nav-link mx-2'>Hi {userName}</h1>
                     {userPoints !== null && <p>Tokens: {userPoints}</p>}
                 </Link>

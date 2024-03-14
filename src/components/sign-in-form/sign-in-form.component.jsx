@@ -19,13 +19,12 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
   const signInWithGoogle = async () => {
-     await signInWithGooglePopup();
+    await signInWithGooglePopup();
   };
 
   const handleSubmit = async (event) => {
@@ -37,7 +36,7 @@ const SignInForm = () => {
         password
       );
       resetFormFields();
-      //Redirect user to home page
+      // Redirect user to home page
     } catch (error) {
       switch (error.code) {
         case 'auth/wrong-password':
@@ -82,6 +81,7 @@ const SignInForm = () => {
         />
         <div className='buttons-container'>
           <Button type='submit'>Sign In</Button>
+          <Button buttonType='google' onClick={signInWithGoogle} style={{ marginLeft: '10px' }}>Google Sign In</Button>
         </div>
       </form>
     </div>

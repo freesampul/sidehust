@@ -7,7 +7,7 @@ const Authentication = () => {
   
   return (
       <div className="h-screen bg-gradient-to-b from-red-50 to-white-100  mt-[-15]">
-      <div className="authentication-container bg-red-50">
+      <div className="authentication-container bg-gradient-to-b from-red-50 to-white-100">
         <SignInForm />
         <SignUpForm />
       </div>
