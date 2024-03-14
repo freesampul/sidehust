@@ -216,12 +216,10 @@ export const validateUserSubscription = async (app, userId) => {
 
 export { firebaseApp };
 
-
-
 export async function getUserPointsByEmail(email) {
   try {
     const userQuerySnapshot = await getDocs(
-      query(collection(db, 'userPoints'), where('email', '==', email))
+      query(collection(db, "userPoints"), where("email", "==", email))
     );
 
     if (userQuerySnapshot.empty) {
@@ -231,7 +229,7 @@ export async function getUserPointsByEmail(email) {
     const userData = userQuerySnapshot.docs[0].data();
     return userData.points;
   } catch (error) {
-    console.error('Error fetching user points:', error.message);
+    console.error("Error fetching user points:", error.message);
     throw error;
   }
 }
@@ -239,15 +237,15 @@ export async function getUserPointsByEmail(email) {
 export async function subtractPointsFromUser(email, pointsToSubtract) {
   try {
     const userQuerySnapshot = await getDocs(
-      query(collection(db, 'userPoints'), where('email', '==', email))
+      query(collection(db, "userPoints"), where("email", "==", email))
     );
 
     if (userQuerySnapshot.empty) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const userId = userQuerySnapshot.docs[0].id;
-    const userDocRef = doc(db, 'userPoints', userId);
+    const userDocRef = doc(db, "userPoints", userId);
     const userDocSnapshot = await getDoc(userDocRef);
     const currentPoints = userDocSnapshot.data().points;
     const newPointsTotal = currentPoints - pointsToSubtract;
@@ -256,7 +254,19 @@ export async function subtractPointsFromUser(email, pointsToSubtract) {
 
     return newPointsTotal;
   } catch (error) {
-    console.error('Error subtracting points:', error.message);
+    console.error("Error subtracting points:", error.message);
     throw error;
   }
+}
+
+export function deleteAccount(userId) {
+  // Delete user from authentication
+  const user = auth.currentUser;
+  if (user) {
+    user.delete();
+  }
+
+  // Delete user from firestore
+  const userDocRef = doc(db, "users", userId);
+  userDocRef.delete();
 }
