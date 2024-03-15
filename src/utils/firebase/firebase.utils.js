@@ -203,6 +203,28 @@ export const getPortalUrl = async (app) => {
   });
 };
 
+export const getSubscriptionManagementUrl = async (app) => {
+  const auth = getAuth(app);
+  const user = auth.currentUser;
+  let subscriptionManagementUrl;
+  try {
+    const functions = getFunctions(app, "us-central1");
+    const functionRef = httpsCallable(
+      functions,
+      "ext-firestore-stripe-payments-manageSubscriptions"
+    );
+    const result = await functionRef({
+      customerId: user?.uid,
+      returnUrl: window.location.origin,
+    });
+    subscriptionManagementUrl = result.data.url;
+     window.location.href = subscriptionManagementUrl;
+  } catch (error) {
+    console.error("Error while retrieving subscription management URL:", error);
+  }
+};
+
+
 //validate if a user is a paying user on stripe
 export const validateUserSubscription = async (app, userId) => {
   const functions = getFunctions(app, "us-central1");
