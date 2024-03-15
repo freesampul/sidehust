@@ -13,20 +13,20 @@ exports.handleStripeCheckoutCompleted = functions.https.onRequest(async (req, re
   try {
     const event = stripe.webhooks.constructEvent(req.rawBody, sig, stripeWebHook);
 
-    if (event.type === 'checkout.session.completed') {
+    if (event.type === 'invoice.payment_succeeded') {
       const session = event.data.object;
       
-      // Extract relevant data from the session
+      console.log('Session object:', session);
+
       const customerId = session.customer;
-      const subscriptionPrice = (session.amount_total / 100); 
+      const customerEmail = session.customer_email;
+      const subscriptionPrice = (session.amount_paid / 100); 
 
       let points = 0;
-      if (subscriptionPrice === 10) {
-        points = 10; 
-      } else if (subscriptionPrice === 15) {
-        points = 20; 
-      } else if (subscriptionPrice === 20) {
-        points = 30; 
+      if (subscriptionPrice > 0 && subscriptionPrice < 4) {
+        points = 100; 
+      } else if (subscriptionPrice > 4) {
+        points = 250; 
       }
 
       const userPointsRef = admin.firestore().collection('userPoints').doc(customerId);
@@ -39,7 +39,9 @@ exports.handleStripeCheckoutCompleted = functions.https.onRequest(async (req, re
 
       const totalPoints = currentPoints + points;
 
+      // Update userPoints document with points and email
       await userPointsRef.set({
+        email: customerEmail,
         points: totalPoints
       }, { merge: true });
 
@@ -49,6 +51,6 @@ exports.handleStripeCheckoutCompleted = functions.https.onRequest(async (req, re
     res.status(200).send('Webhook received successfully');
   } catch (err) {
     console.error('Error handling webhook:', err.message);
-    res.status(400).send('Webhook Error: ' + err.message); // Corrected error response
+    res.status(400).send('Webhook Error: ' + err.message);
   }
 });

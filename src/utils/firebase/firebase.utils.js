@@ -34,6 +34,7 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+const firebaseFunctions = getFunctions(firebaseApp);
 
 export const initFirebase = () => {
   return firebaseApp;
@@ -170,6 +171,32 @@ export const getCheckoutUrl = async (app, priceId) => {
     });
   });
 };
+//Function to cancel a user's subscription
+export const cancelSubscription = async (app) => {
+  const auth = getAuth(app);
+  const user = auth.currentUser;
+
+  let dataWithUrl;
+  try {
+    const functions = getFunctions(app, "us-central1");
+    const cancelSubscriptionFn = httpsCallable(
+      functions,
+      "ext-firestore-stripe-payments-cancelSubscription"
+    );
+    const result = await cancelSubscriptionFn({
+      customerId: user?.uid,
+    });
+
+    dataWithUrl = result.data;
+    console.log("Subscription canceled: ", dataWithUrl);
+  } catch (error) {
+    console.error(error);
+    throw error; // Throw error to handle it outside
+  }
+
+  return dataWithUrl; // Return dataWithUrl or null if there's an error
+};
+
 
 // Function to get a portal URL
 export const getPortalUrl = async (app) => {
@@ -203,28 +230,6 @@ export const getPortalUrl = async (app) => {
   });
 };
 
-export const getSubscriptionManagementUrl = async (app) => {
-  const auth = getAuth(app);
-  const user = auth.currentUser;
-  let subscriptionManagementUrl;
-  try {
-    const functions = getFunctions(app, "us-central1");
-    const functionRef = httpsCallable(
-      functions,
-      "ext-firestore-stripe-payments-manageSubscriptions"
-    );
-    const result = await functionRef({
-      customerId: user?.uid,
-      returnUrl: window.location.origin,
-    });
-    subscriptionManagementUrl = result.data.url;
-     window.location.href = subscriptionManagementUrl;
-  } catch (error) {
-    console.error("Error while retrieving subscription management URL:", error);
-  }
-};
-
-
 //validate if a user is a paying user on stripe
 export const validateUserSubscription = async (app, userId) => {
   const functions = getFunctions(app, "us-central1");
@@ -237,6 +242,8 @@ export const validateUserSubscription = async (app, userId) => {
 };
 
 export { firebaseApp };
+
+
 
 export async function getUserPointsByEmail(email) {
   try {
@@ -282,7 +289,6 @@ export async function subtractPointsFromUser(email, pointsToSubtract) {
 }
 
 export function deleteAccount(userId) {
-  // Delete user from authentication
   const user = auth.currentUser;
   if (user) {
     user.delete();
@@ -291,4 +297,67 @@ export function deleteAccount(userId) {
   // Delete user from firestore
   const userDocRef = doc(db, "users", userId);
   userDocRef.delete();
+}
+
+
+export async function addCourseToPurchased(email, courseTitle) {
+  try {
+    // Check if the user is authenticated
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Get user document
+    const userQuerySnapshot = await getDocs(
+      query(collection(db, "userPoints"), where("email", "==", email))
+    );
+
+    if (userQuerySnapshot.empty) {
+      throw new Error("User not found");
+    }
+
+    const userId = userQuerySnapshot.docs[0].id;
+    const userDocRef = doc(db, "userPoints", userId);
+
+    // Check if the course is already purchased
+    const userDocSnapshot = await getDoc(userDocRef);
+    const purchasedCourses = userDocSnapshot.data().purchasedCourses || [];
+
+    if (purchasedCourses.includes(courseTitle)) {
+      throw new Error("Course already purchased");
+    }
+
+    // Add course to purchased courses array
+    await updateDoc(userDocRef, {
+      purchasedCourses: [...purchasedCourses, courseTitle]
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding course to purchased:", error.message);
+    throw error;
+  }
+}
+
+
+export async function getPurchasedCourses(email) {
+  try {
+    // Get user document
+    const userQuerySnapshot = await getDocs(
+      query(collection(db, "userPoints"), where("email", "==", email))
+    );
+
+    if (userQuerySnapshot.empty) {
+      throw new Error("User not found");
+    }
+
+    const userDocSnapshot = userQuerySnapshot.docs[0];
+    const purchasedCourses = userDocSnapshot.data().purchasedCourses || [];
+
+    return purchasedCourses;
+  } catch (error) {
+    console.error("Error getting purchased courses:", error.message);
+    throw error;
+  }
 }

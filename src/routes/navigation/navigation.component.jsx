@@ -9,6 +9,7 @@ const Navigation = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [isPhonePopupOpen, setIsPhonePopupOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [purchasedCoursesCount, setPurchasedCoursesCount] = useState(0); // New state for purchased courses count
 
   const userName = currentUser ? currentUser.displayName : null;
 
@@ -32,6 +33,16 @@ const Navigation = () => {
 
   const togglePhonePopup = () => {
     setIsPhonePopupOpen(!isPhonePopupOpen);
+  };
+
+  // Function to update purchased courses count
+  const updatePurchasedCoursesCount = () => {
+    setPurchasedCoursesCount(prevCount => prevCount + 1);
+  };
+
+  // Function to handle closing the phone popup
+  const handleClosePhonePopup = () => {
+    setIsPhonePopupOpen(false);
   };
 
   return (
@@ -59,9 +70,10 @@ const Navigation = () => {
             </div>
           </div>
         </nav>
-        <InfoBox />
+        {/* Pass purchasedCoursesCount to InfoBox */}
+        <InfoBox purchasedCoursesCount={purchasedCoursesCount} />
       </div>
-      {windowWidth <= 1024 && isPhonePopupOpen && <PhonePopUp />}
+      {windowWidth <= 1024 && isPhonePopupOpen && <PhonePopUp onClose={handleClosePhonePopup} />}
       <Outlet />
     </Fragment>
   );
