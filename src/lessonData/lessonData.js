@@ -27,15 +27,6 @@ const lessonData = [
       { id: 2, image: "slide4.jpg", alt: "Slide 4", text: "Text for slide 4" },
     ],
   },
-  {
-    id: "course-4",
-    title: "Finance",
-    slides: [
-      { id: 0, image: thumbnailLesson1, alt: "Thumbnail", price: 15 },
-      { id: 1, image: "slide3.jpg", alt: "Slide 3", text: "Text for slide 3" },
-      { id: 2, image: "slide4.jpg", alt: "Slide 4", text: "Text for slide 4" },
-    ],
-  },
 ];
 
 export default lessonData;

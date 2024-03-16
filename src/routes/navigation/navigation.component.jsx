@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 import { UserContext } from "../../contexts/users.context";
 import InfoBox from "../../components/info/info.component";
 import PhonePopUp from "../../components/phone-popup/phone-popup.component";
-import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
+import { ReactComponent as CrwnLogo } from '../../assets/logo.svg';
 
 const Navigation = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -50,9 +50,10 @@ const Navigation = () => {
       <div className="p-4 bg-red-50">
         <nav className="flex items-center justify-between bg-transparent">
           <div className="flex items-center">
-            <span className="text-black text-lg font-semibold mr-2 ml-4">Logo</span>
+            <CrwnLogo className="h-8 w-8" />
+            <span className="text-black text-lg font-semibold">Bizzy Blast</span>
           </div>
-          <div className="flex items-center justify-center flex-grow mr-12">
+          <div className="flex items-center justify-center flex-grow mr-12 ml-[-60px]">
             <div className="hidden lg:flex">
               <Link to="/" className="text-black hover:text-gray-600 px-3 py-2">Home</Link>
               <Link to="/lessons" className="text-black hover:text-gray-600 px-3 py-2">Lessons</Link>

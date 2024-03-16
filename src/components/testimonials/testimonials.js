@@ -1,4 +1,7 @@
 import evan from "./testimonials-images/evan.webp";
+import aaron from "./testimonials-images/aaron.webp";
+import andrew from "./testimonials-images/andrew.webp";
+
 
 const testimonials = [
   {
@@ -9,14 +12,14 @@ const testimonials = [
   },
   {
     id: "testimonial-2",
-    title: "Evan",
-    image: evan,
-    review: "I learned how to ball out",
+    title: "Aaron",
+    image: aaron,
+    review: "I learned how to make money and grow my business. I'm so happy I found this course. These lessons are simple and to the point, even I could understand",
   },
   {
     id: "testimonial-3",
-    title: "Evan",
-    image: evan,
+    title: "Andrew",
+    image: andrew,
     review: "I learned how to ball out",
   },
 ];
