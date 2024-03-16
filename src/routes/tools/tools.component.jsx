@@ -17,7 +17,7 @@ const Tools = () => {
 
   return (
     <Fragment className='bg-red-50'>
-      <div className='bg-gray-100'>
+      <div className='bg-gray-100 mt-[-20px]'>
       <h1 className="text-4xl font-bold mb-4 mt-5 text-center">Tools are coming soon!</h1>
       <h2 className="text-lg font-semibold mb-[-3] text-center">Check back here for more updates, but here is what we're planning to roll out to start making you some money!</h2>
       <h3 className="text-lg font-semibold mt-8 text-center">If you are excited about what's next, join our email list for updates</h3>
