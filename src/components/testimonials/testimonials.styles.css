@@ -1,0 +1,42 @@
+/* Keyframes for horizontal movement */
+@keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% * 3)); /* Adjust the number of testimonials */
+    }
+  }
+  
+  /* Keyframes for resetting */
+  @keyframes reset {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  #test{
+    animation: reset 1s linear infinite; /* Adjust the duration as needed */
+  }
+  #test{
+    animation: scroll 30s linear infinite; /* Adjust the duration as needed */
+  }
+  /* Define animation sequence */
+  @keyframes scroll-reset {
+    0% {
+      animation: scroll 20s linear infinite;
+    }
+    100% {
+      animation: reset 10s linear infinite;
+    }
+  }
+
+  .testimonial-card {
+    width: 500px; 
+    height: 100px;
+}
+
+  

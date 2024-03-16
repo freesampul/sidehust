@@ -2,6 +2,7 @@ import { UserContext } from "../../contexts/users.context";
 import { useContext, useEffect, useState } from "react";
 import { getUserPointsByEmail, subtractPointsFromUser } from "../../utils/firebase/firebase.utils";
 import Button from "../../components/button/button.component";
+import Testimonials from "../../components/testimonials/testimonials.component";
 
 const Chat = () => {
     const { currentUser } = useContext(UserContext);
@@ -40,6 +41,7 @@ const Chat = () => {
             <Button onClick={handleSubtractPoints}>
                 Subtract 5 points
             </Button>
+            <Testimonials />
         </div>
     );
 }

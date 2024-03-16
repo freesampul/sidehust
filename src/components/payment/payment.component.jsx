@@ -1,21 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { getCheckoutUrl } from "../../utils/firebase/firebase.utils";
 import { firebaseApp } from "../../utils/firebase/firebase.utils";
 import LoadingSpinner from '../loading/loading.component';
+import { UserContext } from '../../contexts/users.context';
 
 const Payment = () => {
-    const [selectedTier, setSelectedTier] = useState("Free");
     const [loading, setLoading] = useState(false);
+    const { currentUser } = useContext(UserContext);
 
-    const handlePayment = async () => {
+
+    const handlePayment = async (selectedTier) => {
+        if (!currentUser) {
+            alert("Please sign in to continue");
+            return;
+        }
+        setLoading(true); 
+        let priceId = null;
         try {
-            let priceId = "";
-            if (selectedTier === "Free") {
-                // Handle free tier payment
-            } else if (selectedTier === "Idk") {
-                priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3"; // Replace with actual price ID for "Idk" tier
-            } else if (selectedTier === "Pro") {
-                priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3"; // Replace with actual price ID for "Pro" tier
+            switch (selectedTier) {
+                case "Free":
+                    break;
+                case "Idk":
+                    priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3";
+                    break; 
+                case "Pro":
+                    priceId = "price_1Os5dHDT4vO9oNMHgZ4gCjy3";
+                    break; 
+                default:
+                    break;
             }
             const url = await getCheckoutUrl(firebaseApp, priceId);
             window.location.href = url;
@@ -27,11 +39,6 @@ const Payment = () => {
         }
     };
 
-    const handleTierSelect = async (tier) => {
-        setSelectedTier(tier);
-        setLoading(true); // Set loading state to true
-        await handlePayment(); // Wait for payment process to complete
-    };
     return (
         <div className="h-screen bg-gradient-to-b from-red-50 to-white-100">
             {loading && <LoadingSpinner />} {/* Render loading spinner if loading state is true */}
@@ -57,7 +64,7 @@ const Payment = () => {
                         <p className="text-sm mb-2">Access to all courses</p>
                         <p className="text-sm mb-2">Full access to AI tools</p>
                         <p className="text-sm mb-2">Explore money-making guides and start earning</p>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => handleTierSelect("Idk")}>Upgrade</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => handlePayment("Idk")}>Upgrade</button>
                     </div>
                     <div className="bg-gray-200 rounded-lg shadow-lg p-4">
                         <h2 className="text-xl font-bold mb-2">Pro</h2>
@@ -66,7 +73,7 @@ const Payment = () => {
                         <p className="text-sm mb-2">Access to all courses</p>
                         <p className="text-sm mb-2">Full access to AI tools</p>
                         <p className="text-sm mb-2">Explore money-making guides and start earning</p>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => handleTierSelect("Pro")}>Upgrade</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => handlePayment("Pro")}>Upgrade</button>
                     </div>
                 </div>
             </div>
