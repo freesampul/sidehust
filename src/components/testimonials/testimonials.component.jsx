@@ -2,7 +2,7 @@ import testimonials from "./testimonials";
 
 const Testimonials = () => {
     return (
-        <div className="testimonials flex items-center overflow-hidden">
+        <div className="testimonials flex justify-center items-center">
             <div id='test' className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
                 {testimonials.map((testimonial) => (
                     <div key={testimonial.id} className="bg-white rounded-lg shadow-md p-8 flex flex-col justify-between">

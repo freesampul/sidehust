@@ -19,12 +19,6 @@ const testimonials = [
     image: evan,
     review: "I learned how to ball out",
   },
-  {
-    id: "testimonial-3",
-    title: "Evan",
-    image: evan,
-    review: "I learned how to ball out",
-  },
 ];
 
 export default testimonials;

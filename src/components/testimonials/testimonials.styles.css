@@ -19,7 +19,7 @@
   }
   
   #test{
-    animation: reset 1s linear infinite; /* Adjust the duration as needed */
+    animation: reset 5s linear infinite; /* Adjust the duration as needed */
   }
   #test{
     animation: scroll 30s linear infinite; /* Adjust the duration as needed */
@@ -33,10 +33,4 @@
       animation: reset 10s linear infinite;
     }
   }
-
-  .testimonial-card {
-    width: 500px; 
-    height: 100px;
-}
-
   
