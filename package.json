@@ -13,9 +13,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
+    "react-router": "^6.22.3",
     "react-router-dom": "6",
     "react-scripts": "^5.0.1",
     "sass": "^1.69.5",
+    "serve": "^14.2.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
